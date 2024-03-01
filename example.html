@@ -1,0 +1,237 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&amp;family=Roboto+Slab:wght@400;700&amp;display=swap');
+
+:root {
+    --primary-color: #5D1049;
+    --secondary-color: #E1E2E1;
+    --accent-color: #FFC107;
+    --text-color: #333;
+    --font-body: 'Montserrat', sans-serif;
+    --font-heading: 'Roboto Slab', serif;
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--text-color);
+    background-color: var(--secondary-color);
+    line-height: 1.6;
+    padding: 20px;
+    margin: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+header, section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+header {
+    grid-column: 1 / -1;
+    text-align: center;
+}
+
+header h1 {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+}
+
+header p {
+    font-style: italic;
+}
+
+section:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease-in-out;
+}
+
+h2, h3, h4 {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+}
+
+a {
+    color: var(--accent-color);
+    transition: color 0.3s ease-in-out;
+}
+
+a:hover {
+    color: var(--primary-color);
+}
+
+/* Keyframes for animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container &gt; * {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Styling for code blocks and other elements */
+code, pre {
+    background-color: #f4f4f4;
+    border-radius: 4px;
+}
+
+code {
+    padding: 2px 4px;
+}
+
+pre {
+    padding: 20px;
+    overflow: auto;
+}
+
+/* More sophisticated image styling */
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    header, section {
+        padding: 15px;
+    }
+}
+<h1>mx</h1>
+<p>markdown with extra 🚀 firepower!</p>
+<h2>What is it</h2>
+<p>mx is a markdown renderer that extends the original markdown syntax with a few extra features.<br>
+It makes markdown more powerful and expressive, while still being compatible with the original markdown syntax.</p>
+<h1>Markdown</h1>
+<p>as expected, mx supports the original markdown syntax and all its features. it will render everything as expected. but additionally, it can generate export with custom css and js.</p>
+<hr>
+<h2>Basic Syntax</h2>
+<h3>Headings</h3>
+<pre style="background-color:#ffffff;">
+<span style="font-weight:bold;color:#a71d5d;"># </span><span style="font-weight:bold;color:#323232;">Heading 1
+</span><span style="font-weight:bold;color:#a71d5d;">## </span><span style="font-weight:bold;color:#323232;">Heading 2
+</span><span style="font-weight:bold;color:#a71d5d;">### </span><span style="font-weight:bold;color:#323232;">Heading 3
+</span><span style="font-weight:bold;color:#a71d5d;">#### </span><span style="font-weight:bold;color:#323232;">Heading 4
+</span><span style="font-weight:bold;color:#a71d5d;">##### </span><span style="font-weight:bold;color:#323232;">Heading 5
+</span><span style="font-weight:bold;color:#a71d5d;">###### </span><span style="font-weight:bold;color:#323232;">Heading 6
+</span></pre>
+<p>Here is a heading: <code># Heading</code>, <strong>don’t do this:</strong> <code>#Heading</code></p>
+<h3>Emphasis</h3>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">Emphasis, aka italics, with </span><span style="font-style:italic;color:#a71d5d;">*</span><span style="font-style:italic;color:#323232;">asterisks</span><span style="font-style:italic;color:#a71d5d;">*</span><span style="color:#323232;"> or </span><span style="font-style:italic;color:#a71d5d;">_</span><span style="font-style:italic;color:#323232;">underscores</span><span style="font-style:italic;color:#a71d5d;">_</span><span style="color:#323232;">.
+</span><span style="color:#323232;">
+</span><span style="color:#323232;">Strong emphasis, aka bold, with </span><span style="font-weight:bold;color:#a71d5d;">**</span><span style="font-weight:bold;color:#323232;">asterisks</span><span style="font-weight:bold;color:#a71d5d;">**</span><span style="color:#323232;"> or </span><span style="font-weight:bold;color:#a71d5d;">__</span><span style="font-weight:bold;color:#323232;">underscores</span><span style="font-weight:bold;color:#a71d5d;">__</span><span style="color:#323232;">.
+</span><span style="color:#323232;">
+</span><span style="color:#323232;">Combined emphasis with </span><span style="font-weight:bold;color:#a71d5d;">**</span><span style="font-weight:bold;color:#323232;">asterisks and </span><span style="font-weight:bold;font-style:italic;color:#a71d5d;">_</span><span style="font-weight:bold;font-style:italic;color:#323232;">underscores</span><span style="font-weight:bold;font-style:italic;color:#a71d5d;">_</span><span style="font-weight:bold;color:#a71d5d;">**</span><span style="color:#323232;">.
+</span><span style="color:#323232;">
+</span><span style="color:#323232;">Strikethrough uses two tildes. ~~Scratch this.~~
+</span></pre>
+<h3>Line Breaks</h3>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">First line with two spaces after.  
+</span><span style="color:#323232;">And the next line.
+</span></pre>
+<h3>Lists</h3>
+<h4>Ordered Lists</h4>
+<pre style="background-color:#ffffff;">
+<span style="color:#ed6a43;">1</span><span style="color:#a71d5d;">. </span><span style="color:#ed6a43;">First item
+</span><span style="color:#ed6a43;">2</span><span style="color:#a71d5d;">.</span><span style="color:#ed6a43;"> Second item
+</span><span style="color:#ed6a43;">3</span><span style="color:#a71d5d;">.</span><span style="color:#ed6a43;"> Third item
+</span></pre>
+<h4>Unordered Lists</h4>
+<pre style="background-color:#ffffff;">
+<span style="color:#a71d5d;">- </span><span style="color:#ed6a43;">First item
+</span><span style="color:#a71d5d;">-</span><span style="color:#ed6a43;"> Second item
+</span><span style="color:#a71d5d;">-</span><span style="color:#ed6a43;"> Third item
+</span></pre>
+<h3>Links</h3>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">Link with text: </span><span style="color:#a71d5d;">[</span><span style="color:#4183c4;">link-text</span><span style="color:#a71d5d;">](</span><span style="font-style:italic;color:#4183c4;">https://www.google.com</span><span style="color:#a71d5d;">)
+</span></pre>
+<h3>Images</h3>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">Image with alt text: </span><span style="color:#a71d5d;">![</span><span style="color:#4183c4;">alt-text</span><span style="color:#a71d5d;">](</span><span style="font-style:italic;color:#4183c4;">https://camo.githubusercontent.com/4d89cd791580bfb19080f8b0844ba7e1235aa4becc3f43dfd708a769e257d8de/68747470733a2f2f636e642d70726f642d312e73332e75732d776573742d3030342e6261636b626c617a6562322e636f6d2f6e65772d62616e6e6572342d7363616c65642d666f722d6769746875622e6a7067</span><span style="color:#a71d5d;">)
+</span><span style="color:#323232;">
+</span><span style="color:#323232;">Image without alt text: ![](</span><span style="font-style:italic;color:#323232;">https://camo.githubusercontent.com/4d89cd791580bfb19080f8b0844ba7e1235aa4becc3f43dfd708a769e257d8de/68747470733a2f2f636e642d70726f642d312e73332e75732d776573742d3030342e6261636b626c617a6562322e636f6d2f6e65772d62616e6e6572342d7363616c65642d666f722d6769746875622e6a7067</span><span style="color:#323232;">)
+</span></pre>
+<h3>Code Blocks</h3>
+<h4>Inline Code Block</h4>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">Inline </span><span style="color:#a71d5d;">`</span><span style="color:#323232;">code</span><span style="color:#a71d5d;">`</span><span style="color:#323232;"> has </span><span style="color:#a71d5d;">`</span><span style="color:#323232;">back-ticks around</span><span style="color:#a71d5d;">`</span><span style="color:#323232;"> it.
+</span></pre>
+<h4>Blocks of Code</h4>
+<pre>
+```javascript
+var s = "JavaScript syntax highlighting";
+alert(s);
+```
+ 
+```python
+s = "Python syntax highlighting"
+print s
+```
+ 
+```
+No language indicated, so no syntax highlighting. 
+But let's throw in a <b>tag</b>.
+```
+</pre>
+<h3>Tables</h3>
+<p>There must be at least 3 dashes separating each header cell.
+The outer pipes (|) are optional, and you don’t need to make the raw Markdown line up prettily.</p>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">| Heading 1 | Heading 2 | Heading 3 |
+</span><span style="color:#323232;">|---|---|---|
+</span><span style="color:#323232;">| col1 | col2 | col3 |
+</span><span style="color:#323232;">| col1 | col2 | col3 |
+</span></pre>
+<h3>Task list</h3>
+<p>To create a task list start line with square brackets with an empty space.
+Ex: [ <space> ] and add text for task.
+To check the task replace the space between the bracket with “x”.</p>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">[x] Write the post
+</span><span style="color:#323232;">[ ] Update the website
+</span><span style="color:#323232;">[ ] Contact the user
+</span></pre>
+<h2>Reference</h2>
+<p>Link: <a href="https://www.markdownguide.org/cheat-sheet">markdown guide</a></p>
+<h2>Extra Features</h2>
+<p>on top of the original markdown syntax, mx supports a few extra features that make it more powerful and expressive.
+let’s see them in action.</p>
+<h3>Custom CSS and JS</h3>
+<p>you can add custom css and js to the markdown file by adding them right in the markdown file.
+for example, you can add a custom css file like this:</p>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">/* custom.css */
+</span><span style="color:#323232;">body {
+</span><span style="color:#323232;">  background-color: #f0f0f0;
+</span><span style="color:#323232;">}
+</span><span style="color:#323232;">
+</span><span style="color:#323232;">h1 {
+</span><span style="color:#323232;">  color: red;
+</span><span style="color:#323232;">}
+</span></pre>
+<p>a usual mardown renderer will just display this as a code block, but mx will intelligently exclude the codeblock from output and instead include the css as a header level style.</p>
+<h3>Custom HTML</h3>
+<p>you can add custom html to the markdown file by adding them right in the markdown file.
+for example, you can add a custom html like this:</p>
+<input type="text" placeholder="custom html" style="width: 100%; padding: 10px; margin: 10px 0;"/>
