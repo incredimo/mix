@@ -1,150 +1,137 @@
-# mx  
-markdown with extra 🚀 firepower!
+# Mix 🎨
 
-## What is it
-mx is a markdown renderer that extends the original markdown syntax with a few extra features.  
-It makes markdown more powerful and expressive, while still being compatible with the original markdown syntax.
+A lightweight, ergonomic HTML templating library for Rust that makes building HTML structures feel natural and Rusty.
 
-# Markdown
-as expected, mx supports the original markdown syntax and all its features. it will render everything as expected. but additionally, it can generate export with custom css and js.
+## Features ✨
 
----
-## Basic Syntax
+- Declarative HTML-like syntax using macros
+- Type-safe attribute handling
+- Composable and reusable components
+- Zero external dependencies
+- Simple and intuitive API
+- Compile-time validation
 
-### Headings
-```markdown
-# Heading 1
-## Heading 2
-### Heading 3
-#### Heading 4
-##### Heading 5
-###### Heading 6
+## Quick Start 🚀
+
+Add Mix to your `Cargo.toml`:
+
+```toml
+[dependencies]
+mix = "0.1.0"
 ```
 
-Here is a heading: `# Heading`, **don't do this:** `#Heading` 
+Create your first template:
 
-### Emphasis
-```markdown
-Emphasis, aka italics, with *asterisks* or _underscores_.
+```rust
+use mix::html;
 
-Strong emphasis, aka bold, with **asterisks** or __underscores__.
-
-Combined emphasis with **asterisks and _underscores_**.
-
-Strikethrough uses two tildes. ~~Scratch this.~~
-```
-
-### Line Breaks
-```markdown
-First line with two spaces after.  
-And the next line.
-```
-
-### Lists
-
-#### Ordered Lists
-```markdown
-1. First item
-2. Second item
-3. Third item
-```
-
-#### Unordered Lists
-```markdown
-- First item
-- Second item
-- Third item
-```
-
-### Links
-```markdown
-Link with text: [link-text](https://www.google.com)
-```
-
-### Images
-```markdown
-Image with alt text: ![alt-text](https://camo.githubusercontent.com/4d89cd791580bfb19080f8b0844ba7e1235aa4becc3f43dfd708a769e257d8de/68747470733a2f2f636e642d70726f642d312e73332e75732d776573742d3030342e6261636b626c617a6562322e636f6d2f6e65772d62616e6e6572342d7363616c65642d666f722d6769746875622e6a7067)
-
-Image without alt text: ![](https://camo.githubusercontent.com/4d89cd791580bfb19080f8b0844ba7e1235aa4becc3f43dfd708a769e257d8de/68747470733a2f2f636e642d70726f642d312e73332e75732d776573742d3030342e6261636b626c617a6562322e636f6d2f6e65772d62616e6e6572342d7363616c65642d666f722d6769746875622e6a7067)
-```
-
-### Code Blocks
-
-#### Inline Code Block
-```markdown
-Inline `code` has `back-ticks around` it.
-```
-
-#### Blocks of Code
-<pre>
-```javascript
-var s = "JavaScript syntax highlighting";
-alert(s);
-```
- 
-```python
-s = "Python syntax highlighting"
-print s
-```
- 
-```
-No language indicated, so no syntax highlighting. 
-But let's throw in a <b>tag</b>.
-```
-</pre>
-
-### Tables
-
-There must be at least 3 dashes separating each header cell.
-The outer pipes (|) are optional, and you don't need to make the raw Markdown line up prettily.
-
-```markdown
-| Heading 1 | Heading 2 | Heading 3 |
-|---|---|---|
-| col1 | col2 | col3 |
-| col1 | col2 | col3 |
-```
-
-### Task list
-
-To create a task list start line with square brackets with an empty space.
-Ex: [ <space> ] and add text for task.
-To check the task replace the space between the bracket with "x".
-
-```markdown
-[x] Write the post
-[ ] Update the website
-[ ] Contact the user
-```
-
-## Reference
-
-Link: [markdown guide](https://www.markdownguide.org/cheat-sheet)
-
-## Extra Features
-
-on top of the original markdown syntax, mx supports a few extra features that make it more powerful and expressive.
-let's see them in action.
-
-### Custom CSS and JS
-you can add custom css and js to the markdown file by adding them right in the markdown file.
-for example, you can add a custom css file like this:
-
-```css [mx:css]
-/* custom.css */
-body {
-  background-color: #f0f0f0;
-}
-
-h1 {
-  color: red;
+fn main() {
+    let page = html! {
+        html {
+            head {
+                title { "Welcome to Mix!" }
+            }
+            body (class = "container") {
+                h1 { "Hello, World!" }
+                p { "Building HTML in Rust has never been easier." }
+            }
+        }
+    };
+    
+    println!("{}", page);
 }
 ```
-a usual mardown renderer will just display this as a code block, but mx will intelligently exclude the codeblock from output and instead include the css as a header level style.
 
-### Custom HTML 
-you can add custom html to the markdown file by adding them right in the markdown file.
-for example, you can add a custom html like this:
+## Usage Examples 🎯
 
-<input type="text" placeholder="custom html" style="width: 100%; padding: 10px; margin: 10px 0;"/>
+### Basic Elements
 
+Create simple HTML elements with attributes:
+
+```rust
+let button = html! {
+    button (class = "btn", id = "submit") {
+        "Click me!"
+    }
+};
+```
+
+### Nested Structures
+
+Build complex nested structures with ease:
+
+```rust
+let card = html! {
+    div (class = "card") {
+        div (class = "card-header") {
+            h2 { "Featured" }
+        }
+        div (class = "card-body") {
+            p { "This is some sample content." }
+            a (href = "#", class = "btn btn-primary") {
+                "Learn more"
+            }
+        }
+    }
+};
+```
+
+### Custom Components
+
+Create reusable components using the `Html` trait:
+
+```rust
+struct NavLink {
+    text: String,
+    href: String,
+    active: bool,
+}
+
+impl Html for NavLink {
+    fn render(&self) -> String {
+        html! {
+            a (
+                href = self.href,
+                class = if self.active { "nav-link active" } else { "nav-link" }
+            ) {
+                self.text
+            }
+        }
+    }
+}
+```
+
+## How It Works 🔧
+
+Mix uses a combination of traits and macros to provide a seamless HTML templating experience:
+
+1. The `Html` trait defines how elements are rendered to strings
+2. The `Element` struct represents HTML elements with their attributes and children
+3. The `html!` macro provides the familiar HTML-like syntax
+4. String literals are automatically escaped and handled appropriately
+
+## Best Practices 📚
+
+1. Keep your components small and focused
+2. Use semantic HTML tags
+3. Leverage Rust's type system for safe templates
+4. Break down complex structures into smaller, reusable components
+
+## Contributing 🤝
+
+We welcome contributions! Here's how you can help:
+
+1. Fork the repository
+2. Create a new branch for your feature
+3. Add tests for new functionality
+4. Submit a pull request
+
+Please make sure to update tests as appropriate and follow our code style.
+
+## License 📄
+
+MIT License 
+
+## Credits 👏
+
+Created with ❤️ by the Mix team. Special thanks to all our contributors!
