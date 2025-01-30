@@ -1,11 +1,12 @@
-#[allow(warnings)]
-// Only keep std::fmt if you actually need it for something else.
-use std::fmt;
-
-// --------------------------------------------------------
-// 1) The core trait and Element struct
-// --------------------------------------------------------
-
+#![allow(warnings)]
+ 
+/// ████████   ██ ██    ██
+/// ██  ██  ██ ██   ████
+/// ██  ██  ██ ██   ████
+/// ██  ██  ██ ██ ██    ██
+/// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/// dead simple html builder
+/// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 pub trait Html {
     fn render(&self) -> String;
 }
@@ -76,6 +77,10 @@ impl Html for &str {
 //
 // This macro returns a String. It parses a *sequence* of
 // possible “nodes” (tags or text) and concatenates them.
+//
+// IMPORTANT: If you want to insert a Rust expression such
+// as `self.title`, wrap it in parentheses: `(self.title)`.
+// That is necessary due to Rust macro fragment rules.
 
 #[macro_export]
 macro_rules! html {
@@ -105,6 +110,13 @@ macro_rules! html {
     ($text:literal $($rest:tt)*) => {{
         // If the user wrote raw text, just append it.
         format!("{}{}", $text, $crate::html!{ $($rest)* })
+    }};
+
+    // ---- NEW PATTERN: expression (must be wrapped in parentheses) + more ----
+    // e.g. `(self.title)` or `(some_func())`
+    (($val:expr) $($rest:tt)*) => {{
+        let rendered_expr = $val.render();
+        format!("{}{}", rendered_expr, $crate::html!{ $($rest)* })
     }};
 }
 
@@ -241,10 +253,10 @@ mod tests {
                 html! {
                     div (class = "card") {
                         div (class = "card-header") {
-                            h3 { "self.title" }
+                            h3 { (self.title) }
                         }
                         div (class = "card-body") {
-                            p { "self.content" }
+                            p { (self.content) }
                         }
                     }
                 }
