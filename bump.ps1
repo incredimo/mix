@@ -1,152 +1,83 @@
 param (
-    [Parameter(Mandatory=$false)]
-    [ValidateSet("major", "minor", "patch")]
-    [string]$VersionType = "patch",
-
-    [Parameter(Mandatory=$false)]
-    [switch]$WhatIf
+    [switch]$local
 )
 
-# Function to parse and increment semantic version
-function Increment-Version {
-    param (
-        [string]$Version,
-        [string]$Type
-    )
+# Define the path to Cargo.toml
+$cargoTomlPath = "./Cargo.toml"
 
-    $parts = $Version -split '\.'
-    $major = [int]$parts[0]
-    $minor = [int]$parts[1]
-    $patch = [int]$parts[2]
-
-    switch ($Type) {
-        "major" {
-            $major += 1
-            $minor = 0
-            $patch = 0
-        }
-        "minor" {
-            $minor += 1
-            $patch = 0
-        }
-        "patch" {
-            $patch += 1
-        }
-    }
-
-    return "$major.$minor.$patch"
-}
-
-# Ensure we're in the git repository root
-$gitRoot = git rev-parse --show-toplevel
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Not in a git repository!"
-    exit 1
-}
-Set-Location $gitRoot
-
-# Ensure we're on the main branch
-$currentBranch = git rev-parse --abbrev-ref HEAD
-if ($currentBranch -ne "main") {
-    Write-Error "Not on main branch! Current branch: $currentBranch"
+# Ensure Cargo.toml exists
+if (-Not (Test-Path $cargoTomlPath)) {
+    Write-Output "❌ Cargo.toml not found at path: $cargoTomlPath"
+    Write-Output "Please ensure the script is run from the root directory of your Rust project."
     exit 1
 }
 
-# Check for uncommitted changes
-$status = git status --porcelain
-if ($status) {
-    Write-Error "There are uncommitted changes in the repository!"
-    Write-Host "Please commit or stash your changes before running this script."
+# Read the Cargo.toml content into a variable
+$cargoTomlContent = Get-Content -Path $cargoTomlPath -Raw
+
+# Use a regular expression to find the version line
+$matched = $cargoTomlContent -match 'version\s*=\s*"(\d+\.\d+\.\d+)"'
+if (-Not $matched) {
+    Write-Output "❌ Version line not found in Cargo.toml"
+    Write-Output "Please ensure the Cargo.toml file contains a valid version line."
     exit 1
 }
+$versionLine = $matches[1]
 
-# Pull latest changes
-Write-Host "📥 Pulling latest changes..."
-if (-not $WhatIf) {
-    git pull --rebase
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error "Failed to pull latest changes!"
-        exit 1
-    }
+# Split the version into major, minor, and patch
+$versionParts = $versionLine.Split('.')
+$major = $versionParts[0]
+$minor = $versionParts[1]
+$patch = [int]$versionParts[2]
+
+# Increment the patch version
+$patch += 1
+
+# Construct the new version string
+$newVersion = "$major.$minor.$patch"
+
+# Replace the old version with the new version in the Cargo.toml content
+$newCargoTomlContent = $cargoTomlContent -replace ('version\s*=\s*"' + [regex]::Escape($versionLine) + '"'), ('version = "' + $newVersion + '"')
+
+# Write the new Cargo.toml content back to the file
+Set-Content -Path $cargoTomlPath -Value $newCargoTomlContent
+Write-Output "✅ Updated version to $newVersion in Cargo.toml"
+
+# Get the current date
+$publishDate = Get-Date -Format "yyyy-MM-dd"
+
+# Commit messages with publish date
+if ($local) {
+    $commitMessage = "🔧 Bump version to $newVersion ($publishDate)"
 } else {
-    Write-Host "[WhatIf] Would pull latest changes with rebase"
+    $commitMessage = "🚀 Bump version to $newVersion ($publishDate) and release 📦"
 }
+$releaseMessage = "Release v$newVersion ($publishDate)"
 
-# Read current version from Cargo.toml
-$cargoContent = Get-Content "Cargo.toml" -Raw
-if ($cargoContent -match "version\s*=\s*\"([0-9]+\.[0-9]+\.[0-9]+)\"") {
-    $currentVersion = $matches[1]
-    $newVersion = Increment-Version -Version $currentVersion -Type $VersionType
+# Build in release mode and move the binaries to the release folder
+$releaseFolder = "./release"
+if (Test-Path $releaseFolder) {
+    Remove-Item -Recurse -Force $releaseFolder
+}
+New-Item -ItemType Directory -Path $releaseFolder | Out-Null
 
-    Write-Host "🏷️ Current version: $currentVersion"
-    Write-Host "🆕 New version: $newVersion"
+ 
+git add .
+git commit -m "$commitMessage"
 
-    # Update version in Cargo.toml
-    $updatedContent = $cargoContent -replace "version\s*=\s*\"$currentVersion\"", "version = \"$newVersion\""
+ 
 
-    if (-not $WhatIf) {
-        # Ask for confirmation
-        $confirmation = Read-Host "Are you sure you want to bump version from $currentVersion to $newVersion? (y/n)"
-        if ($confirmation -ne "y") {
-            Write-Host "Version bump cancelled."
-            exit 0
-        }
-        Set-Content -Path "Cargo.toml" -Value $updatedContent -NoNewline
-    } else {
-        Write-Host "[WhatIf] Would update Cargo.toml with new version: $newVersion"
-    }
+# Push the commit and tag to your repository
+Write-Output "🎉 Pushing changes and tags to the repository..."
+git push && git push --tags
 
-    # Run cargo check to update Cargo.lock
-    Write-Host "🔍 Running cargo check..."
-    if (-not $WhatIf) {
-        cargo check
-        if ($LASTEXITCODE -ne 0) {
-            Write-Error "Cargo check failed!"
-            # Revert changes
-            git checkout -- Cargo.toml
-            exit 1
-        }
-    } else {
-        Write-Host "[WhatIf] Would run 'cargo check'"
-    }
-
-    # Git operations
-    Write-Host "📝 Committing changes..."
-    if (-not $WhatIf) {
-        git add Cargo.toml Cargo.lock
-        git commit -m "chore: bump version to $newVersion"
-
-        Write-Host "🏷️ Creating tag..."
-        git tag -a "v$newVersion" -m "Version $newVersion"
-
-        Write-Host "⬆️ Pushing changes..."
-        git push origin main
-        git push origin "v$newVersion"
-    } else {
-        Write-Host "[WhatIf] Would commit and push version bump to $newVersion"
-        Write-Host "[WhatIf] Would create and push tag v$newVersion"
-    }
-
-    if (-not $WhatIf) {
-        Write-Host "✅ Successfully bumped version to $newVersion and pushed changes"
-    }
-
-    # Publish to crates.io
-    Write-Host "📦 Publishing to crates.io..."
-    if (-not $WhatIf) {
-        cargo publish --allow-dirty
-        if ($LASTEXITCODE -ne 0) {
-            Write-Error "Failed to publish to crates.io!"
-            exit 1
-        }
-    } else {
-        Write-Host "[WhatIf] Would publish version $newVersion to crates.io"
-    }
-
-    if (-not $WhatIf) {
-        Write-Host "✅ Successfully published to crates.io"
-    }
+# Publish the package to crates.io directly
+Write-Output "📦 Attempting to publish package to crates.io..."
+cargo publish --allow-dirty
+if ($LASTEXITCODE -eq 0) {
+    Write-Output "✨ Package successfully published to crates.io!"
 } else {
-    Write-Error "Could not find version in Cargo.toml"
-    exit 1
+    Write-Host "❌ Failed to publish package to crates.io. We did not update the crate." -ForegroundColor Red
 }
+
+Write-Output "🎉 Release v$newVersion completed!"

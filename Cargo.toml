@@ -1,6 +1,6 @@
 [package]
 name = "mix"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 description = "mix - a rust ui library cooked up in half a day! (expect extra salt)"
 authors = ["incredimo <a@xo.rs>"]
@@ -60,3 +60,4 @@ strip = true
 
 [profile.dev.package."*"]
 opt-level = 3
+
