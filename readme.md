@@ -1,119 +1,83 @@
-# 🚀 Mix HTML Builder
+# mix UI Library
 
-A zero-dependency, lightweight HTML builder for Rust with an elegant macro syntax. Build HTML structures with the simplicity of JSX and the power of Rust - in just ~200 lines of code!
+mix is a high-performance UI library for Rust, inspired by Makepad's architecture but with a focus on simplicity and performance. mix provides a clean, modular API for building cross-platform user interfaces without the complexity of live rendering and compiler features.
 
-## ✨ Features
+## Features
 
-- **Zero Dependencies**: no serde no thiserror how come? 
-- **Minimal Core**: The entire implementation is less than 200 lines of code
-- **Type-Safe**: Leverage Rust's type system
-- **JSX-like Syntax**: Familiar and intuitive
-- **Component-Based**: Create reusable HTML components
+- **High Performance**: Built with performance in mind, using efficient rendering techniques
+- **Cross-Platform**: Supports Windows, macOS, Linux, and Web (via WebAssembly)
+- **Modular Architecture**: Clean separation between platform, drawing, and widget layers
+- **Simple API**: Easy-to-use API for building UIs with minimal boilerplate
+- **Customizable Theming**: Flexible theming system for consistent UI appearance
 
-## 🎯 Quick Start
+## Architecture
 
-```rust
-let page = html! {
-    div (class = "container") {
-        h1 { "Welcome!" }
-        p { "This is a " span (class = "highlight") { "simple" } " example." }
-    }
-};
+mix is organized into three main crates:
+
+1. **mix-platform**: Core platform abstraction layer that handles windowing, events, and rendering
+2. **mix-draw**: Drawing primitives and utilities for 2D rendering
+3. **mix-widgets**: UI widgets and layout system
+
+## Getting Started
+
+Add mix to your Cargo.toml:
+
+```toml
+[dependencies]
+mix-platform = "0.1.0"
+mix-draw = "0.1.0"
+mix-widgets = "0.1.0"
 ```
 
-## 🔧 Usage
-
-### Basic Elements
+Create a simple application:
 
 ```rust
-html! {
-    div (class = "card", id = "main") {
-        h2 { "Hello, World!" }
-        p { "This is a paragraph." }
+use mix_platform::Cx;
+use mix_platform::event::Event;
+use mix_widgets::*;
+
+struct MyApp {
+    window: Window,
+}
+
+impl MyApp {
+    fn new() -> Self {
+        let mut cx = Cx::new();
+        
+        // Create a view with a label
+        let mut content = View::new(&mut cx);
+        content.add_child(Label::new(&mut cx, "Hello, mix!"));
+        
+        // Create window with content
+        let window = Window::new(&mut cx, "My App")
+            .with_content(content);
+        
+        Self { window }
     }
 }
-```
 
-### Custom Components
-
-```rust
-struct Card {
-    title: String,
-    content: String,
-}
-
-impl Html for Card {
-    fn render(&self) -> String {
-        html! {
-            div (class = "card") {
-                h3 { (self.title) }
-                p { (self.content) }
-            }
+impl AppMain for MyApp {
+    fn handle_event(&mut self, cx: &mut Cx, event: &Event) {
+        self.window.handle_event(cx, event);
+        
+        if let Event::Draw = event {
+            let mut cx2d = Cx2d::new(cx);
+            self.window.draw(&mut cx2d);
         }
     }
 }
 
-// Use it in your HTML:
-let card = Card {
-    title: "My Card".into(),
-    content: "Some content".into(),
-};
-
-html! {
-    div {
-        (card)
-    }
-}
+app_main!(MyApp);
 ```
 
-### Nested Structures
+## Examples
 
-```rust
-html! {
-    nav (class = "navbar") {
-        ul {
-            li { a (href = "/") { "Home" } }
-            li { a (href = "/about") { "About" } }
-            li { a (href = "/contact") { "Contact" } }
-        }
-    }
-}
-```
+Check out the examples directory for more examples:
 
-## 🛠 How It Works
+- **hello_world**: A simple Hello World application
+- **counter**: A counter application demonstrating state management
+- **todo_list**: A todo list application demonstrating more complex UI
 
-The entire implementation is built around just three core components:
+## License
 
-1. A simple `Html` trait:
-```rust
-pub trait Html {
-    fn render(&self) -> String;
-}
-```
-
-2. An `Element` struct for building HTML elements:
-```rust
-pub struct Element {
-    tag: String,
-    attrs: Vec<(String, String)>,
-    children: Vec<Box<dyn Html>>,
-}
-```
-
-3. A powerful `html!` macro that makes it all work together seamlessly
-
-## 🎨 Why Use This?
-
-- **Simplicity**: The implementation is so minimal you can understand the entire codebase in minutes
-- **No Dependencies**: Keep your project lean
-- **Flexible**: Build anything from simple components to complex layouts
-- **Type-Safe**: Catch errors at compile time, not runtime
-- **Extensible**: Easy to customize and extend
-
-## 📝 License
-
-MIT License
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to open issues and pull requests.
+MIT or Apache-2.0, at your option.
