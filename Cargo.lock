@@ -30,18 +30,14 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 name = "counter"
 version = "0.1.0"
 dependencies = [
- "mix-draw",
- "mix-platform",
- "mix-widgets",
+ "mix",
 ]
 
 [[package]]
 name = "hello_world"
 version = "0.1.0"
 dependencies = [
- "mix-draw",
- "mix-platform",
- "mix-widgets",
+ "mix",
 ]
 
 [[package]]
@@ -51,32 +47,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13dc2df351e3202783a1fe0d44375f7295ffb4049267b0f3018346dc122a1d94"
 
 [[package]]
-name = "mix-draw"
-version = "0.1.0"
+name = "mix"
+version = "0.2.0"
 dependencies = [
  "ab_glyph_rasterizer",
- "mix-platform",
- "ttf-parser",
- "unicode-segmentation",
-]
-
-[[package]]
-name = "mix-platform"
-version = "0.1.0"
-dependencies = [
  "bitflags",
  "smallvec",
+ "ttf-parser",
+ "unicode-segmentation",
  "wasm-bindgen",
  "windows",
  "windows-targets 0.48.5",
-]
-
-[[package]]
-name = "mix-widgets"
-version = "0.1.0"
-dependencies = [
- "mix-draw",
- "mix-platform",
 ]
 
 [[package]]

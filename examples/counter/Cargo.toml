@@ -4,6 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-mix-platform = { path = "../../platform" }
-mix-draw = { path = "../../draw" }
-mix-widgets = { path = "../../widgets" }
+mix = { path = "../.." }

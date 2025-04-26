@@ -12,11 +12,11 @@ mix is a high-performance UI library for Rust, inspired by Makepad's architectur
 
 ## Architecture
 
-mix is organized into three main crates:
+mix is organized into three main modules:
 
-1. **mix-platform**: Core platform abstraction layer that handles windowing, events, and rendering
-2. **mix-draw**: Drawing primitives and utilities for 2D rendering
-3. **mix-widgets**: UI widgets and layout system
+1. **platform**: Core platform abstraction layer that handles windowing, events, and rendering
+2. **draw**: Drawing primitives and utilities for 2D rendering
+3. **widgets**: UI widgets and layout system
 
 ## Getting Started
 
@@ -24,17 +24,15 @@ Add mix to your Cargo.toml:
 
 ```toml
 [dependencies]
-mix-platform = "0.1.0"
-mix-draw = "0.1.0"
-mix-widgets = "0.1.0"
+mix = "0.1.0"
 ```
 
 Create a simple application:
 
 ```rust
-use mix_platform::Cx;
-use mix_platform::event::Event;
-use mix_widgets::*;
+use mix::Cx;
+use mix::event::Event;
+use mix::*;
 
 struct MyApp {
     window: Window,
@@ -43,15 +41,15 @@ struct MyApp {
 impl MyApp {
     fn new() -> Self {
         let mut cx = Cx::new();
-        
+
         // Create a view with a label
         let mut content = View::new(&mut cx);
         content.add_child(Label::new(&mut cx, "Hello, mix!"));
-        
+
         // Create window with content
         let window = Window::new(&mut cx, "My App")
             .with_content(content);
-        
+
         Self { window }
     }
 }
@@ -59,7 +57,7 @@ impl MyApp {
 impl AppMain for MyApp {
     fn handle_event(&mut self, cx: &mut Cx, event: &Event) {
         self.window.handle_event(cx, event);
-        
+
         if let Event::Draw = event {
             let mut cx2d = Cx2d::new(cx);
             self.window.draw(&mut cx2d);

@@ -1,9 +1,10 @@
-use mix_platform::Cx;
-use mix_platform::event::Event;
-use mix_platform::math::Vec2;
-use mix_draw::color::Color;
-use mix_draw::layout::{Layout, LayoutAlign};
-use mix_widgets::*;
+use mix::Cx;
+use mix::event::Event;
+use mix::platform::math::Vec2;
+use mix::draw::color::Color;
+use mix::draw::layout::{Layout, LayoutAlign};
+use mix::Cx2d;
+use mix::*;
 
 struct HelloWorldApp {
     window: Window,
