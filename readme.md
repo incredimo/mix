@@ -1,81 +1,159 @@
-# mix UI Library
+# Mix
 
-mix is a high-performance UI library for Rust, inspired by Makepad's architecture but with a focus on simplicity and performance. mix provides a clean, modular API for building cross-platform user interfaces without the complexity of live rendering and compiler features.
+A powerful, self-contained Markdown to PDF converter written in Go.
+
+**No external dependencies** - no Chrome, no wkhtmltopdf, no browser automation. Just pure Go.
 
 ## Features
 
-- **High Performance**: Built with performance in mind, using efficient rendering techniques
-- **Cross-Platform**: Supports Windows, macOS, Linux, and Web (via WebAssembly)
-- **Modular Architecture**: Clean separation between platform, drawing, and widget layers
-- **Simple API**: Easy-to-use API for building UIs with minimal boilerplate
-- **Customizable Theming**: Flexible theming system for consistent UI appearance
+- ⚡ **Fast** - Written in Go for blazing speed
+- 🎨 **Beautiful** - Professional styling out of the box
+- 🎯 **Simple** - Just run `mix document.md`
+- 📝 **CSS Styling** - Full CSS support for customization
+- 📦 **Self-contained** - Single binary, no dependencies
+- 🔧 **Customizable** - Themes, styles, CLI flags
 
-## Architecture
+## Installation
 
-mix is organized into three main modules:
-
-1. **platform**: Core platform abstraction layer that handles windowing, events, and rendering
-2. **draw**: Drawing primitives and utilities for 2D rendering
-3. **widgets**: UI widgets and layout system
-
-## Getting Started
-
-Add mix to your Cargo.toml:
-
-```toml
-[dependencies]
-mix = "0.1.0"
+```bash
+go install github.com/incredimo/mix@latest
 ```
 
-Create a simple application:
+Or build from source:
 
-```rust
-use mix::Cx;
-use mix::event::Event;
-use mix::*;
+```bash
+git clone https://github.com/incredimo/mix
+cd mix
+go build .
+```
 
-struct MyApp {
-    window: Window,
-}
+## Quick Start
 
-impl MyApp {
-    fn new() -> Self {
-        let mut cx = Cx::new();
+### Initialize a Project
 
-        // Create a view with a label
-        let mut content = View::new(&mut cx);
-        content.add_child(Label::new(&mut cx, "Hello, mix!"));
+```bash
+mix init .
+```
 
-        // Create window with content
-        let window = Window::new(&mut cx, "My App")
-            .with_content(content);
+This creates:
+- `sample.md` - A sample markdown document
+- `style.css` - A customizable stylesheet
 
-        Self { window }
-    }
-}
+### Convert a Document
 
-impl AppMain for MyApp {
-    fn handle_event(&mut self, cx: &mut Cx, event: &Event) {
-        self.window.handle_event(cx, event);
+```bash
+mix document.md
+```
 
-        if let Event::Draw = event {
-            let mut cx2d = Cx2d::new(cx);
-            self.window.draw(&mut cx2d);
-        }
-    }
-}
+Creates `document.pdf` in the same directory.
 
-app_main!(MyApp);
+## Usage
+
+```
+mix [file.md] [flags]
+
+Flags:
+  -o, --output string   Output PDF filename
+  -s, --style string    Custom CSS stylesheet
+  -t, --theme string    Built-in theme (default, minimal, academic)
+      --no-style        Disable all styling
+  -v, --verbose         Show verbose output
+  -q, --quiet           Suppress all output except errors
+
+Commands:
+  mix init [dir]        Initialize a new project with sample files
+  mix version           Print version information
+  mix help              Show help
 ```
 
 ## Examples
 
-Check out the examples directory for more examples:
+```bash
+# Basic conversion
+mix document.md
 
-- **hello_world**: A simple Hello World application
-- **counter**: A counter application demonstrating state management
-- **todo_list**: A todo list application demonstrating more complex UI
+# Custom output filename
+mix document.md -o report.pdf
+
+# Use custom stylesheet
+mix document.md -s corporate-style.css
+
+# Verbose output for debugging
+mix document.md -v
+
+# Initialize in a new directory
+mix init my-project
+```
+
+## Styling with CSS
+
+Mix automatically looks for `style.css` in the same directory as your markdown file. You can also specify a custom stylesheet with `-s`.
+
+### Supported CSS Selectors
+
+| Selector | Description |
+|----------|-------------|
+| `body` | Main document text |
+| `h1` - `h6` | Headings |
+| `code`, `pre` | Code blocks |
+| `blockquote` | Block quotes |
+| `a` | Links |
+
+### Supported CSS Properties
+
+| Property | Example |
+|----------|---------|
+| `font-family` | `"Helvetica"`, `"Times"`, `"Courier"` |
+| `font-size` | `12pt`, `16px` |
+| `color` | `#333333`, `#F00` |
+| `background-color` | `#F5F5F5` |
+| `line-height` | `18pt` |
+
+### Example style.css
+
+```css
+body {
+    font-family: "Helvetica";
+    font-size: 11pt;
+    color: #333333;
+}
+
+h1 {
+    font-size: 28pt;
+    color: #111827;
+}
+
+h2 {
+    font-size: 22pt;
+    color: #1F2937;
+}
+
+code {
+    font-family: "Courier";
+    background-color: #F3F4F6;
+}
+
+a {
+    color: #3B82F6;
+}
+```
+
+## Markdown Features
+
+Mix supports GitHub Flavored Markdown (GFM):
+
+- **Headings** (H1-H6)
+- **Bold** and *italic* text
+- ~~Strikethrough~~
+- `Inline code`
+- Code blocks with syntax highlighting
+- Tables
+- Blockquotes
+- Ordered and unordered lists
+- Links and images
+- Horizontal rules
+- Task lists
 
 ## License
 
-MIT or Apache-2.0, at your option.
+MIT License
